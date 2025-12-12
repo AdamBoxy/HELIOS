@@ -40,28 +40,6 @@ The shared "brain" containing mathematical normalization (LogScale, Sigmoid) and
 
 ---
 
-## 📦 Installation
-
-```bash
-git clone [https://github.com/AdamBoxy/HELIOS.git](https://github.com/AdamBoxy/HELIOS.git)
-cd HELIOS
-npm install
-
-## 🛠️ Simulations
-HELIOS includes two simulation suites to test system responses under "Carrington Event" conditions.
-
-### Run the Grid Simulation
-**Scenario:** A 2500 nT/min magnetic shockwave hits the substation.
-
-```bash
-npx ts-node tests/simulation.test.ts
-
-### Run the Orbit Simulation
-**Scenario:** An S5 Solar Radiation Storm hits a mixed LEO/GEO constellation.
-
-'''bash
-npx ts-node tests/orbit_simulation.test.ts
-
 ## 🤝 Contribution
 This project is an open concept for Safe AI/Human Teaming. We welcome PRs for:
 
@@ -70,3 +48,30 @@ New Domains (e.g., src/domains/aviation).
 Real-world Protocol Drivers (DNP3, CCSDS).
 
 License: MIT
+
+---
+
+## 📦 Installation
+
+```bash
+git clone [https://github.com/AdamBoxy/HELIOS.git](https://github.com/AdamBoxy/HELIOS.git)
+cd HELIOS
+npm install  
+'''  
+
+---
+
+
+## 🛠️ Simulations
+HELIOS includes two simulation suites to test system responses under "Carrington Event" conditions.
+
+### Run the Grid Simulation
+**Scenario:** A 2500 nT/min magnetic shockwave hits the substation.
+```bash
+npx ts-node tests/simulation.test.ts
+'''
+### Run the Orbit Simulation
+**Scenario:** An S5 Solar Radiation Storm hits a mixed LEO/GEO constellation.
+'''bash
+npx ts-node tests/orbit_simulation.test.ts
+'''
