@@ -3,25 +3,46 @@
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Safety Level](https://img.shields.io/badge/safety-SIL4-red)
+![Architecture](https://img.shields.io/badge/architecture-multi--domain-orange)
 
-HELIOS is an autonomous agent framework designed to protect critical power grid infrastructure during **Carrington-class Geomagnetic Disturbance (GMD)** events.
+HELIOS is an autonomous agent platform designed to protect critical infrastructure from **Carrington-class Geomagnetic Disturbance (GMD)** events.
+
+Originally designed for **Power Grid** protection, HELIOS has evolved into a multi-domain safety system that simultaneously defends:
+1.  **Terrestrial Assets:** High-Voltage Transformers (GIC saturation mitigation).
+2.  **Orbital Assets:** LEO/GEO Satellites (Atmospheric drag & dielectric charging mitigation).
+
+---
 
 ## 🚀 Mission
-In the event of a massive Coronal Mass Ejection (CME), human response time (minutes) may be too slow to prevent transformer saturation. HELIOS acts as a **fail-safe automation layer** that:
-1. Monitors real-time magnetometer (dB/dt) feeds.
-2. Calculates instantaneous risk to Transformer assets.
-3. Enforces a **deterministic safety posture** (e.g., shifting to `MINIMAL_SURVIVAL` mode).
+In the event of a massive Coronal Mass Ejection (CME), human response time is often too slow to prevent catastrophic damage. HELIOS acts as a **fail-safe automation layer** that:
+* **Monitors** real-time space weather (NOAA SWPC feeds).
+* **Calculates** domain-specific risk (e.g., Transformer heating vs. Satellite drag).
+* **Enforces** a deterministic "Safety Posture" (e.g., `MINIMAL_SURVIVAL`).
+
+---
 
 ## 🧠 Architecture
-HELIOS uses a strict **Event-Driven Architecture**:
-* **Sensors**: Ingest NOAA SWPC JSON feeds.
-* **Risk Engine**: Normalizes `Kp` and `dB/dt` into a scalar `SeverityIndex`.
-* **Policy Gate**: A "Human-in-the-loop" circuit breaker that forbids destructive actions unless strict criteria are met.
+HELIOS utilizes a **Domain-Driven Design (DDD)** approach with a strict Event-Driven Architecture:
+
+### 📂 Core (`src/core`)
+The shared "brain" containing mathematical normalization (LogScale, Sigmoid) and the global `SafetyPosture` state machine.
+
+### ⚡ Domain: Grid (`src/domains/grid`)
+* **Threat:** Geomagnetically Induced Currents (GIC) caused by $dB/dt$.
+* **Defense:** Load shedding, neutral isolation, and transformer de-energization.
+* **Logic:** `GridRiskEngine` prioritizes assets based on geology and latitude.
+
+### 🛰️ Domain: Orbit (`src/domains/orbit`)
+* **Threat:** * **LEO:** Atmospheric Drag (Heat expansion from $K_p$).
+    * **GEO:** Dielectric Charging (High-energy Electron flux).
+* **Defense:** "Phoenix Mode" (Safe Mode), payload shutdown, orbit raising.
+* **Logic:** `OrbitRiskEngine` distinguishes between orbit classes to apply specific mitigations.
+
+---
 
 ## 📦 Installation
+
 ```bash
-git clone [https://github.com/yourusername/helios-gmd.git](https://github.com/yourusername/helios-gmd.git)
-cd helios-gmd
+git clone [https://github.com/AdamBoxy/HELIOS.git](https://github.com/AdamBoxy/HELIOS.git)
+cd HELIOS
 npm install
-npm start
