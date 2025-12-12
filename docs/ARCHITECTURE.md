@@ -1,37 +1,75 @@
 **Project:** HELIOS (Heuristic Event-driven Loop for Infrastructure & Operational Safety)  
 **Context:** GMD (Geomagnetic Disturbance) Mitigation Level 5  
-**Version:** 2.1-Optimized
+**Version:** 2.2-Optimized
 
-## 1\. System Overview
+# 🏛️ HELIOS System Architecture
 
-HELIOS is an autonomous agent system designed to protect critical power grid infrastructure (specifically High-Voltage Transformers) from geomagnetically induced currents (GIC) caused by Carrington-class solar events.
+HELIOS is a multi-domain resilience framework designed to facilitate AI/Human teaming during extreme space weather events. It operates as a middleware layer between raw telemetry streams and critical infrastructure control interfaces.
 
-Unlike standard SCADA automation, HELIOS prioritizes **asset preservation** over **service continuity** during extreme events ($Kp > 8$).
+## 1. High-Level Design
+The system follows a **Hexagonal Architecture (Ports and Adapters)**. The core logic (Safety/Policy Engine) is isolated from the external domains (Power Grid, Satellite Constellations), allowing for distinct simulation drivers for each environment.
 
-## 2\. Threat Model
+### Core Components
+* **Sentinel Engine:** The central AI reasoning unit that monitors telemetry for "Carrington-level" anomalies.
+* **Policy Registry:** A immutable set of safety constraints (e.g., "Do not disconnect hospitals," "Do not de-orbit without human key-turn").
+* **Human-in-the-Loop (HITL) Interface:** A required approval gate for high-stakes actions.
 
-  * **Vector:** Coronal Mass Ejection (CME) leading to magnetosphere compression.
-  * **Physical Impact:** Quasi-DC currents saturate transformer cores $\rightarrow$ Harmonic generation $\rightarrow$ Overheating/Vibration $\rightarrow$ Catastrophic Failure.
-  * **Operational Constraint:** Human operators may be overwhelmed by alarm floods. HELIOS acts as a filter and a safety interlock.
+---
 
-## 3\. Architecture & Data Flow
+## 2. Directory Structure & Domains
+The codebase is organized by physical domain, treating Space and Earth as distinct operational contexts.
 
-The system utilizes a **Reactive Agent Pattern**:
+```text
+src/
+├── core/                  # Shared AI reasoning & Policy Engine
+├── domains/
+│   ├── grid/              # Terrestrial Power Systems
+│   │   ├── adapters/      # DNP3 / IEC 61850 drivers
+│   │   └── models/        # Substation, Transformer
+│   └── orbit/             # <--- NEW: Space Systems
+│       ├── adapters/      # CCSDS / CSP drivers
+│       └── models/        # Satellite (LEO/GEO), Transponder
+└── simulations/           # Chaos Engineering Scenarios
+```
 
-1.  **Ingest:** `SpaceWeatherWatcher` streams NOAA JSON feeds via WebSocket.
-2.  **Process:** `SafetyCoordinator` calculates the System Severity Index (SSI).
-3.  **State:** If SSI exceeds thresholds, Global Posture updates (`NORMAL` $\rightarrow$ `DEFENSIVE`).
-4.  **Plan:** `MitigationPlanner` queries the Asset Database for high-GIC-risk nodes (long transmission lines, specific geologic conductivity) and generates a candidate `ActionList`.
-5.  **Filter:** `PolicyGate` removes actions violating current safety rules.
-6.  **Execute:** `Executor` sends DNP3/Modbus commands to substation RTUs.
+---
 
-## 4\. Safety Constraints (The Three Laws of HELIOS)
+## 3. Supported Domains
 
-1.  **Do No Harm:** In `NORMAL` state, the system represents `Read-Only` authority. It cannot act.
-2.  **Fail Safe:** In the event of sensor loss or telemetry timeout, the system maintains the *last known safe configuration* and alerts operators. It does *not* auto-trigger protective trips on stale data.
-3.  **Human Supremacy:** Any automated action scheduled for `MINIMAL_SURVIVAL` mode that involves load shedding \> 50MW requires cryptographic signing (Human Approval) unless `EmergencyOverride` is active.
+### 🌍 A. Terrestrial Grid (Power)
+Focuses on GIC (Geomagnetically Induced Currents) management.
+* **Input:** Magnetometer readings (nT/min).
+* **Assets:** Substations, Transformers.
+* **Protocol:** DNP3 (Distributed Network Protocol).
+* **Critical Threshold:** > 2000 nT/min (simulated coil saturation).
 
-## 5\. Black-Start Preservation Strategy
+### 🛰️ B. Orbital Constellation (Space)
+Focuses on SEU (Single Event Upsets) and drag analysis during solar events.
+* **Input:** Solar Flux (SFU), Proton Density, Kp Index.
+* **Assets:** Mixed LEO/GEO Constellations.
+* **Protocol:** CCSDS (Consultative Committee for Space Data Systems) Telemetry packets.
+* **Critical Threshold:** S5 Radiation Storm (Particle flux > 10⁵ pfu).
+
+---
+
+## 4. Simulation Engine
+The simulation engine injects synthetic telemetry into the adapters to validate system response.
+
+| Scenario | Domain | Trigger | Expected Response |
+| :--- | :--- | :--- | :--- |
+| **Magnetic Shockwave** | Grid | 2500 nT/min surge | Isolate transformer, reroute load, alert operator. |
+| **S5 Radiation Storm** | Orbit | High Energy Proton spike | **Safe Mode:** Power down non-essential payloads, orient solar panels for drag reduction. |
+
+## 5. Data Flow (Orbit Scenario)
+
+1.  **Ingest:** `OrbitAdapter` receives a mock CCSDS packet indicating a sharp rise in battery temperature and logic errors (SEUs).
+2.  **Detection:** `Sentinel Engine` correlates internal telemetry with external Space Weather API data (simulated).
+3.  **Proposal:** AI proposes "Enter Safe Mode" to prevent permanent latch-up.
+4.  **Verification:** The system locks execution until a cryptographically signed Human acknowledgment is received (simulated via CLI).
+5.  **Execution:** Command sent via Telecommand (TC) frame.
+
+
+## Black-Start Preservation Strategy
 
 Upon entering `MINIMAL_SURVIVAL`:
 
