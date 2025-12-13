@@ -26,9 +26,12 @@ src/
 │   ├── grid/              # Terrestrial Power Systems
 │   │   ├── adapters/      # DNP3 / IEC 61850 drivers
 │   │   └── models/        # Substation, Transformer
-│   └── orbit/             # <--- NEW: Space Systems
-│       ├── adapters/      # CCSDS / CSP drivers
-│       └── models/        # Satellite (LEO/GEO), Transponder
+│   ├── orbit/             # Space Systems
+│   │   ├── adapters/      # CCSDS / CSP drivers
+│   │   └── models/        # Satellite (LEO/GEO)
+│   └── neo/               # <--- NEW: Planetary Defense
+│       ├── adapters/      # CNEOS / ADES drivers
+│       └── models/        # Asteroid, Ephemeris
 └── simulations/           # Chaos Engineering Scenarios
 ```
 
@@ -50,6 +53,14 @@ Focuses on SEU (Single Event Upsets) and drag analysis during solar events.
 * **Protocol:** CCSDS (Consultative Committee for Space Data Systems) Telemetry packets.
 * **Critical Threshold:** S5 Radiation Storm (Particle flux > 10⁵ pfu).
 
+### ☄️ C. Planetary Defense (NEO)
+Focuses on long-horizon kinetic impact threats from Near-Earth Objects.
+* **Input:** Ephemeris Data (Orbital State Vectors), Impact Probability.
+* **Assets:** Ground Optical (Pan-STARRS, ATLAS), Space IR (NEO Surveyor), Planetary Radar (Goldstone).
+* **Protocol:** ADES (Astronomy Data Exchange Standard) / CNEOS API.
+* **Critical Threshold:** Torino Scale ≥ 5 (Threatening) OR Impact Probability > 1% (IAWN Warning Threshold).
+
+Output: Coordination signals for IAWN (International Asteroid Warning Network) and civil protection agencies.
 ---
 
 ## 4. Simulation Engine
@@ -59,6 +70,7 @@ The simulation engine injects synthetic telemetry into the adapters to validate 
 | :--- | :--- | :--- | :--- |
 | **Magnetic Shockwave** | Grid | 2500 nT/min surge | Isolate transformer, reroute load, alert operator. |
 | **S5 Radiation Storm** | Orbit | High Energy Proton spike | **Safe Mode:** Power down non-essential payloads, orient solar panels for drag reduction. |
+| **2025 XZ Incident** | NEO | Impact Prob > 1% | **Defensive Mode:** Task radar ranging, notify IAWN, simulate kinetic deflection missions. |  
 
 ## 5. Data Flow (Orbit Scenario)
 
