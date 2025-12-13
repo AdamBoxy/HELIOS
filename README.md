@@ -71,7 +71,11 @@ npx ts-node tests/simulation.test.ts
 ```bash
 npx ts-node tests/orbit_simulation.test.ts
 ```
-
+### Run the NEO Simulation  
+**Scenario:** The 2025 XZ Incident
+```bash
+npx ts-node tests/neo_simulation.test.ts
+```
 ---
 
 ## 🤝 Contribution
