@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Architecture](https://img.shields.io/badge/architecture-multi--domain-orange)
 
-HELIOS is an autonomous agent platform designed to protect critical infrastructure from **Carrington-class Geomagnetic Disturbance (GMD)** events.
+HELIOS is an autonomous agent platform designed to protect critical infrastructure and satellites from **Carrington-class Geomagnetic Disturbance (GMD)** events while serving as an alert system for NEOs.
 
 Originally designed for **Power Grid** protection, HELIOS has evolved into a multi-domain safety system that simultaneously defends:
 1.  **Terrestrial Assets:** High-Voltage Transformers (GIC saturation mitigation).
