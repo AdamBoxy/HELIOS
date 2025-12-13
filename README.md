@@ -10,7 +10,7 @@ HELIOS is an autonomous agent platform designed to protect critical infrastructu
 Originally designed for **Power Grid** protection, HELIOS has evolved into a multi-domain safety system that simultaneously defends:
 1.  **Terrestrial Assets:** High-Voltage Transformers (GIC saturation mitigation).
 2.  **Orbital Assets:** LEO/GEO Satellites (Atmospheric drag & dielectric charging mitigation).
-
+3.  **Near Earth Objects:** Long-horizon threat assessment for NEOs.
 ---
 
 ## 🚀 Mission
@@ -33,11 +33,18 @@ The shared "brain" containing mathematical normalization (LogScale, Sigmoid) and
 * **Logic:** `GridRiskEngine` prioritizes assets based on geology and latitude.
 
 ### 🛰️ Domain: Orbit (`src/domains/orbit`)
-* **Threat:** * **LEO:** Atmospheric Drag (Heat expansion from $K_p$).
-    * **GEO:** Dielectric Charging (High-energy Electron flux).
+* **Threat:**
+  * **LEO:** Atmospheric Drag (Heat expansion from $K_p$).
+  * **GEO:** Dielectric Charging (High-energy Electron flux).
 * **Defense:** "Phoenix Mode" (Safe Mode), payload shutdown, orbit raising.
 * **Logic:** `OrbitRiskEngine` distinguishes between orbit classes to apply specific mitigations.
 
+### 🪐 Domain: NEO (`src/domains/neo`)  
+* **Threat:** Near Earth Objects (NEOs), input Ephemeris data, Impact Probability, Torino Scale ratings.
+* **Defense:** Coordination signals for IAWN (International Asteroid Warning Network) and civil protection agencies.
+* **Logic:** `NeoRiskEngine` categorizes threats based on energy/probability. 
+* ***Note:*** HELIOS is a defensive coordination tool. It detects hazards and coordinates response logistics (evacuation planning, mission timeline generation). It does not interface with weapons systems.
+ 
 ---
 
 ## 📦 Installation
